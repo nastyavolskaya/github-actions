@@ -17,6 +17,6 @@ jobs:
       run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . # Билдим проект, и в конце автоматически подставляется тег, который мы указали в плашке через expresions
 
     - name: Push Docker image to Docker hub
-      run: | # Логинемся в селектеле и пушим образ в него) Здесь используются секреты, которые задаются в репозитории проекта (Setting -> Secrets and variables -> Actions) Секреты нельзя будет просмотреть потом никак, только заменить. 
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ env.DOCKER_USERNAME }} --password-stdin
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ env.DOCKER_USERNAME }} --password-stdin --interactive --tty
         docker push nastyavolskaya/my-image-name:${{ github.event.inputs.tag }}
