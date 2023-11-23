@@ -1,20 +1,23 @@
-name: Docker build # Название workflow
-on: # На что будет триггерится workflow
-  workflow_dispatch: # Установливаем ручной запуск workflow
-    inputs: # Ручной запуск будет включать показ окошка с указанием тега
-      tag: # Название входного параметра 
-        description: 'Docker image tag' # Задаем описание тега, который будет указан в названии всплывающего окошка.
-        required: true # Указываем, что в всплывающем окошке обязательно нужно ввести тег. 
+name: Docker build 
+on: # 
+  workflow_dispatch: 
+    inputs: 
+      tag:
+        description: 'Docker image tag' 
+        required: true 
 jobs: 
-  build: # Название джобы
-    runs-on: ubuntu-latest # Указываем где она будет запускаться
-
+  build: 
+    runs-on: ubuntu-latest 
+  
     steps:
-    - name: Checkout code # Название шага, который будет выполнять джоба. В данном случае получение кода из репозитория.
-      uses: actions/checkout@v2 # Здесь используем actions из гитхаба, это кусок уже написанного кода от разработчиков гитхаба.
-
+    - name: Checkout code 
+      uses: actions/checkout@v2 
+      
+    - name: check env
+    - run: echo "${{ env.DOCKER_USERNAME }}"
+    
     - name: Build Docker image 
-      run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . # Билдим проект, и в конце автоматически подставляется тег, который мы указали в плашке через expresions
+      run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . 
 
     - name: Push Docker image to Docker hub
       run: |
