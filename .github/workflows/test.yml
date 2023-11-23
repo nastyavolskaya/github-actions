@@ -18,5 +18,5 @@ jobs:
 
     - name: Push Docker image to Docker hub
       run: | # Логинемся в селектеле и пушим образ в него) Здесь используются секреты, которые задаются в репозитории проекта (Setting -> Secrets and variables -> Actions) Секреты нельзя будет просмотреть потом никак, только заменить. 
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ vars.DOCKER_USERNAME }} --password-stdin
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ env.DOCKER_USERNAME }} --password-stdin
         docker push nastyavolskaya/my-image-name:${{ github.event.inputs.tag }}
