@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code 
       uses: actions/checkout@v2 
+    - name: check env
+      run: echo ${{ env.DOCKER_USERNAME }}
       
     - name: Build Docker image 
       run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . 
