@@ -1,12 +1,22 @@
-name: Test workflow # Название workflow
-on: workflow_dispatch # На какой триггер будет реагировать workflow, чтобы автоматически запуститься. workflow_dispatch означает, что он будет запускаться в ручном режиме.
-jobs:
-  print_test: #Даем название джобе, которая будет отражать, то чем она будет заниматься.
-    runs-on: ubuntu-latest #Указываем на какой машине, на каком сервере, с какой операционной системой необходимо запустить данный workflow
-    steps: #Шаг, который будет выполнять джоба
-      - name: Print to console # Даем название шагу, который будет выполняться
-        run: echo Hello GH actions #Запускаем команду, которая у нас будет выполнена на данном шаге.
-      - name: Print to lines # Внутри одной джобы может быть сколько угодно шагов, это второй шаг с выводом нескольких линей в консоль.
-        run: |
-          echo First line
-          echo Second line
+name: Docker build # Название workflow
+on: # На что будет триггерится workflow
+  workflow_dispatch: # Установливаем ручной запуск workflow
+    inputs: # Ручной запуск будет включать показ окошка с указанием тега
+      tag: # Название входного параметра 
+        description: 'Docker image tag' # Задаем описание тега, который будет указан в названии всплывающего окошка.
+        required: true # Указываем, что в всплывающем окошке обязательно нужно ввести тег. 
+jobs: 
+  build: # Название джобы
+    runs-on: ubuntu-latest # Указываем где она будет запускаться
+
+    steps:
+    - name: Checkout code # Название шага, который будет выполнять джоба. В данном случае получение кода из репозитория.
+      uses: actions/checkout@v2 # Здесь используем actions из гитхаба, это кусок уже написанного кода от разработчиков гитхаба.
+
+    - name: Build Docker image 
+      run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . # Билдим проект, и в конце автоматически подставляется тег, который мы указали в плашке через expresions
+
+    - name: Push Docker image to Docker hub
+      run: | # Логинемся в селектеле и пушим образ в него) Здесь используются секреты, которые задаются в репозитории проекта (Setting -> Secrets and variables -> Actions) Секреты нельзя будет просмотреть потом никак, только заменить. 
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ vars.DOCKER_USERNAME }} --password-stdin
+        docker push nastyavolskaya/my-image-name:${{ github.event.inputs.tag }}
