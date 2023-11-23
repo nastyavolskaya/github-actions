@@ -12,11 +12,11 @@ jobs:
     steps:
     - name: Checkout code 
       uses: actions/checkout@v2 
-      
+    
     - name: Build Docker image 
       run: docker build -t nastyavolskaya/my-image-name:${{ github.event.inputs.tag }} . 
 
     - name: Push Docker image to Docker hub
       run: |
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u $DOCKER_USERNAME --password-stdin
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ vars.DOCKER_USERNAME }} --password-stdin
         docker push nastyavolskaya/my-image-name:${{ github.event.inputs.tag }}
